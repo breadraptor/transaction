@@ -6,13 +6,14 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Random;
 
 public class Transaction {
 
-	DataOutputStream outToServer;
+	PrintWriter outToServer;
 	
 	public static int cubbyNum;
 	public int cubby1;
@@ -21,19 +22,18 @@ public class Transaction {
 	
 	public Transaction(int ch) throws UnknownHostException, IOException{
 		
-		// temporary TCP connection? do we want to do this in main?
+		// TCP connection? do we want to do this in main?
 		Socket clientSocket = new Socket("localhost", 6789);
-	    outToServer = new DataOutputStream(clientSocket.getOutputStream());
-		BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-		  
-		System.out.println("writing to server...");
-		  outToServer.writeBytes("hey");
-		  String received = inFromServer.readLine();
-		  System.out.println("FROM SERVER: " + received);
-		  
+		outToServer = new PrintWriter(clientSocket.getOutputStream(), true);
+	    BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 		
-		// TODO set cubbyNum, the amount of cubbys that Base created.
-		// send this over TCP?
+	    // getting number of cubbys!
+		System.out.println("Asking server about cubbys...");
+		outToServer.println("?");
+		String received = inFromServer.readLine();
+		System.out.println("FROM SERVER: " + received);
+		cubbyNum = Integer.parseInt(received);
+		  
 		numChange = ch; // this is the amount that the transaction will inc/dec
 		Random ran = new Random();
 		// nextInt returns a value between 0 (inclusive) and cubbyNum (exclusive)
@@ -46,7 +46,7 @@ public class Transaction {
 	}
 	
 	public synchronized void increment() throws IOException{
-		outToServer.writeBytes("increment");
+		outToServer.println("increment");
 		
 	}
 	

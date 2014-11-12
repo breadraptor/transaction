@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.locks.Lock;
@@ -34,6 +35,10 @@ public class Base {
 		}
 		System.out.print("How many cubbyholes would you like? ");
 		command = reader.readLine();
+		if (Integer.parseInt(command) < 1){
+			System.out.println("You must have at least one cubbyhole.");
+			System.exit(0);
+		}
 		cubbyNum = Integer.parseInt(command);
 		Cubbyhole[] cubbys = new Cubbyhole[cubbyNum];
 		
@@ -49,21 +54,29 @@ public class Base {
 		
 		boolean done = false;
 		System.out.println("Waiting for transactions.");
+		Socket connectionSocket;
+		BufferedReader inFromClient;
+		PrintWriter outToClient;
+		String received;
+		
 		while (!done){
 
-			Socket connectionSocket = welcomeSocket.accept();
+			connectionSocket = welcomeSocket.accept();
 			System.out.println("Transaction has connected.");
-			BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
-		    DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
+			inFromClient = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
+		    outToClient = new PrintWriter(connectionSocket.getOutputStream(), true);
 		    
-		    String received = inFromClient.readLine();
+		    received = inFromClient.readLine();
 		    System.out.println("Received: " + received);
+		    if (received.equals("?")){
+		    	outToClient.println(cubbyNum);
+		    }
 			
-		    outToClient.writeBytes("Cubbyhole edited.");
+		   // outToClient.println("Cubbyhole edited.");
 		    
 		}
 	}
-	
+
 	public int getCubbys(){
 		return cubbyNum;
 	}
