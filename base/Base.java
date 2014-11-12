@@ -1,8 +1,11 @@
 package base;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
@@ -11,13 +14,14 @@ public class Base {
 
 	private static final Logger LOGGER = Logger.getLogger( Base.class.getName() );
 	
-	private final Lock lock = new ReentrantLock();
+	//private final Lock lock = new ReentrantLock();
 	private static int cubbyNum;
 	
 	public static void main(String[] args) throws IOException{
 		
 		LOGGER.info("Logging an INFO-level message");
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in)); 
+		ServerSocket welcomeSocket = new ServerSocket(6789);
 		
 		System.out.println("Initializing cubbyholes.");
 		System.out.print("Will we be locking today? ");
@@ -46,7 +50,17 @@ public class Base {
 		boolean done = false;
 		System.out.println("Waiting for transactions.");
 		while (!done){
+
+			Socket connectionSocket = welcomeSocket.accept();
+			System.out.println("Transaction has connected.");
+			BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
+		    DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
+		    
+		    String received = inFromClient.readLine();
+		    System.out.println("Received: " + received);
 			
+		    outToClient.writeBytes("Cubbyhole edited.");
+		    
 		}
 	}
 	
