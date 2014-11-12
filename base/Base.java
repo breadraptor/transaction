@@ -69,8 +69,12 @@ public class Base {
 		    received = inFromClient.readLine();
 		    System.out.println("Received: " + received);
 		    if (received.equals("?")){
+		    	// give the transaction how many cubbys we have
 		    	outToClient.println(cubbyNum);
 		    }
+		    
+		    received = inFromClient.readLine();
+		    System.out.println("Received 2nd time: " + received);
 			
 		   // outToClient.println("Cubbyhole edited.");
 		    

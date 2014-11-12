@@ -39,6 +39,7 @@ public class Transaction {
 		// nextInt returns a value between 0 (inclusive) and cubbyNum (exclusive)
 		cubby1 = ran.nextInt(cubbyNum);
 		cubby2 = ran.nextInt(cubbyNum);
+		System.out.println("Cubby1 = " + cubby1 + " cubby2 = " + cubby2);
 		increment();
 		decrement();
 		
@@ -46,13 +47,13 @@ public class Transaction {
 	}
 	
 	public synchronized void increment() throws IOException{
-		outToServer.println("increment");
+		outToServer.println("+" + numChange);
 		
 	}
 	
 	public synchronized void decrement(){
-		// TODO make sure the subtraction won't take the cubby below 0!
-		
+		// TODO make sure the subtraction won't take the cubby below 0!?
+		outToServer.println("-" + numChange);
 	}
 	
 }
