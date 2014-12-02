@@ -12,4 +12,8 @@ public class Cubbyhole {
 		return number;
 	}
 	
+	public void setNumber(int num){
+		this.number = num;
+	}
+	
 }
